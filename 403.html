@@ -1,56 +1,32 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
-<title>403 Forbidden</title>
-<style>
-html{font:15px/1.5 Arial,Helvetica,sans-serif;background:#fff;color:#222}
-body{max-width:650px;margin:70px auto;padding:0 24px}
-h1{font-size:29px;font-weight:500;margin:0 0 9px}
-p{color:#666;margin:0 0 18px}
-input{font:inherit;padding:9px 10px;border:1px solid #aaa;border-radius:0;background:white;color:#222;width:210px;max-width:65vw}
-button{font:inherit;padding:9px 14px;margin-left:5px;border:1px solid #999;border-radius:0;background:#eee;color:#222;cursor:pointer}
-small{display:block;min-height:1.5em;margin-top:14px;color:#666}
-</style>
-</head>
-<body>
+<title>403 Forbidden</title><style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html{background:#090d10;color:#bfccd2;font:14px/1.6 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}
+body{max-width:680px;margin:clamp(48px,12vh,110px) auto;padding:0 25px}
+h1{font-size:clamp(22px,5vw,31px);font-weight:500;color:#e0e8eb;margin:0 0 10px}
+p{margin:0 0 18px;color:#96a8b0}
+.rule{border:0;border-top:1px solid #2d3b42;margin:26px 0 18px}
+small{color:#788a93}
+input,button{font:inherit;color:#e0e8eb;border:1px solid #425158;border-radius:0;padding:9px 11px;background:#111a1f}
+input{width:220px;max-width:62vw;outline-offset:2px}
+button{cursor:pointer;margin-left:5px}
+button:hover,.hot:hover{background:#1d2b31}
+.hot{display:inline-block;min-width:15px;color:#dbe9ef;cursor:pointer;padding:0 3px;text-decoration:none}
+#status{display:block;margin-top:17px;min-height:20px}
+</style></head><body>
 <h1>403 Forbidden</h1>
-<p>Access to this resource requires verification.</p>
-<form id="gate">
-<input id="access" type="password" placeholder="Access code" aria-label="Access code" autocomplete="off" required autofocus>
-<button type="submit">Continue</button>
-</form>
-<small id="status">Access restricted.</small>
+<p>The server understood the request but refuses to authorize it.</p>
+<p>Reference: <a class="hot" id="next" href="./" aria-label="Continue verification">0</a></p>
+<small id="status">Access denied.</small><hr class="rule">
+<small>No additional information is available.</small>
 <script>
-const SALT = 'bea70c0a4e915c76bccabba5b8a5564a';
-const HASH = '3351fa76ffd1952f5bbb5d7d9611f4695531bad84fa321d97abd830bfe37f245';
-const WORK = 300000;
-function fromHex(x){return Uint8Array.from(x.match(/../g),n=>parseInt(n,16))}
-function hex(x){return Array.from(new Uint8Array(x),n=>n.toString(16).padStart(2,'0')).join('')}
-document.getElementById('gate').addEventListener('submit',async event=>{
-  event.preventDefault();
-  const input=document.getElementById('access');
-  const status=document.getElementById('status');
-  const button=document.querySelector('button');
-  button.disabled=true;
-  status.textContent='Verifying...';
-  try {
-    const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(input.value),'PBKDF2',false,['deriveBits']);
-    const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:fromHex(SALT),iterations:WORK},key,256);
-    if(hex(bits)===HASH){
-      sessionStorage.setItem('error-verified-once','1');
-      location.replace('./');
-      return;
-    }
-    status.textContent='403 - Verification failed.';
-  } catch(error) {
-    console.error('Verification error',error);
-    status.textContent='Verification unavailable.';
-  }
-  input.value='';button.disabled=false;input.focus();
-});
-</script>
-</body>
-</html>
+(()=>{
+ const status=document.getElementById('status');const link=document.getElementById('next');
+ const ok=sessionStorage.getItem('dark-error-v2-first')==='1';
+ if(!ok){link.removeAttribute('href');link.style.cursor='default';status.textContent='403 - Invalid request.';return;}
+ link.addEventListener('click',e=>{e.preventDefault();sessionStorage.removeItem('dark-error-v2-first');sessionStorage.setItem('dark-error-v2-decrypt','1');location.assign('./');});
+})();
+</script></body></html>

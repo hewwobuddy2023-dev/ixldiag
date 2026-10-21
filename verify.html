@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>Authorization Required</title><style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html{background:#090d10;color:#bfccd2;font:14px/1.6 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}
+body{max-width:680px;margin:clamp(48px,12vh,110px) auto;padding:0 25px}
+h1{font-size:clamp(22px,5vw,31px);font-weight:500;color:#e0e8eb;margin:0 0 10px}
+p{margin:0 0 18px;color:#96a8b0}
+.rule{border:0;border-top:1px solid #2d3b42;margin:26px 0 18px}
+small{color:#788a93}
+input,button{font:inherit;color:#e0e8eb;border:1px solid #425158;border-radius:0;padding:9px 11px;background:#111a1f}
+input{width:220px;max-width:62vw;outline-offset:2px}
+button{cursor:pointer;margin-left:5px}
+button:hover,.hot:hover{background:#1d2b31}
+.hot{display:inline-block;min-width:15px;color:#dbe9ef;cursor:pointer;padding:0 3px;text-decoration:none}
+#status{display:block;margin-top:17px;min-height:20px}
+</style></head><body>
+<h1>Authorization Required</h1><p>Request verification required.</p>
+<form id="auth"><input type="password" id="access" aria-label="Access code" placeholder="Access code" required autofocus autocomplete="off"><button type="submit">Verify</button></form>
+<small id="status">Authorization pending.</small><hr class="rule"><small>Request could not be completed.</small>
+<script>
+(()=>{
+ const SALT='5f7a329a1eddc9c47d5dbeec3b3ae319',HASH='d72c9668f96803e4503aea5124f3db5ccf0ac784cc6a91ae9276eb7a94bfc400',WORK=300000;
+ const hex=x=>Array.from(new Uint8Array(x),v=>v.toString(16).padStart(2,'0')).join('');
+ document.getElementById('auth').addEventListener('submit',async e=>{
+  e.preventDefault();const input=document.getElementById('access');const status=document.getElementById('status');const btn=document.querySelector('button');
+  btn.disabled=true;status.textContent='Verifying request...';
+  try{
+   const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(input.value),'PBKDF2',false,['deriveBits']);
+   const salt=Uint8Array.from(SALT.match(/../g),x=>parseInt(x,16));
+   const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:WORK},key,256);
+   if(hex(bits)===HASH){sessionStorage.setItem('dark-error-v2-first','1');location.replace('./403.html');return;}
+   status.textContent='Authorization failed.';
+  }catch(err){status.textContent='Verification unavailable.';console.error(err)}
+  input.value='';btn.disabled=false;input.focus();
+ });
+})();
+</script></body></html>
