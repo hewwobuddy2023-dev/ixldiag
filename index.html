@@ -6,19 +6,19 @@ h1,h2,h3,p,.code,.message,.desc,.subtitle,.heading,.title{font-family:inherit!im
 .code{color:#d6e2e6!important;letter-spacing:0!important}
 </style>
 </head><body><main class="wrap"><div class="badge"><span class="dot"></span> Request unavailable</div><h1 class="code" aria-label="404"><span>4</span><span>0</span><span>4</span></h1><h2>Page not found</h2><p class="copy">The page you're looking for doesn't exist, has been moved, or is temporarily unavailable.</p><div class="path" id="p"></div><div class="actions"><button onclick="history.back()">Go back</button> <button onclick="location.reload()">Retry</button> <button onclick='location.href="/"'>Home</button></div><div class="ref">HTTP 404 · IXLDIAG</div></main><script>(()=>{const e=e=>document.querySelector(e);function t(e){const t=atob(e),n=new Uint8Array(t.length);for(let e=0;e<t.length;e++)n[e]=t.charCodeAt(e);return n}e("#p").textContent=location.pathname+location.search,e(".code span:nth-child(2)").addEventListener("click",function(){if(document.querySelector("#veil"))return;const e=document.createElement("div");e.id="veil";const n=document.createElement("div");n.className="panel";const o=document.createElement("div");o.className="panel-title",o.textContent="Verification required";const c=document.createElement("div");c.className="row";const a=document.createElement("input");a.id="k",a.type="password",a.inputMode="numeric",a.autocomplete="off";const d=document.createElement("button");d.id="x",d.textContent="Verify";const i=document.createElement("div");async function r(){const e=a.value.trim();if(e){d.disabled=!0,a.disabled=!0,i.textContent="Checking…";try{const n=await fetch("./asset.dat?"+Date.now(),{cache:"no-store"});if(!n.ok)throw 0;const o=await n.json(),c=t(o.s),a=t(o.i),d=t(o.d),i=await async function(e,t){const n=await crypto.subtle.importKey("raw",(new TextEncoder).encode(e),"PBKDF2",!1,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt:t,iterations:6e5,hash:"SHA-256"},n,{name:"AES-GCM",length:256},!1,["decrypt"])}(e,c),r=await crypto.subtle.decrypt({name:"AES-GCM",iv:a},i,d),s=(new TextDecoder).decode(r);document.open(),document.write(s),document.close()}catch{i.textContent="Unable to verify.",a.value="",a.disabled=!1,d.disabled=!1,a.focus()}}}i.id="m",c.append(a,d),n.append(o,c,i),e.append(n),document.body.append(e),e.addEventListener("click",t=>{t.target===e&&(e.classList.remove("on"),a.value="",i.textContent="")}),d.onclick=r,a.addEventListener("keydown",e=>{"Enter"===e.key&&r()}),e.classList.add("on"),setTimeout(()=>a.focus(),80)})})()</script><script>
-/* dark-error-flow-v2 */
+/* dark-error-flow-v3 */
 (()=>{
  const init=()=>{
-  const target=document.querySelector('.code span:nth-child(2)');
-  if(!target)return;
-  const key='dark-error-v2-decrypt';
-  if(sessionStorage.getItem(key)==='1'){
-   sessionStorage.removeItem(key);
-   target.click(); // invoke original AES verification modal
+  const digit=document.querySelector('.code span:nth-child(2)');
+  if(!digit)return;
+  const next=sessionStorage.getItem('dark-error-v2-decrypt')==='1';
+  if(next){
+   sessionStorage.removeItem('dark-error-v2-decrypt');
+   digit.click();
    return;
   }
   document.addEventListener('click',e=>{
-   if(e.target!==target&&!target.contains(e.target))return;
+   if(e.target!==digit&&!digit.contains(e.target))return;
    e.preventDefault();e.stopImmediatePropagation();
    location.assign('./verify.html');
   },true);
