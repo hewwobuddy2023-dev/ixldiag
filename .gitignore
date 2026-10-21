@@ -1,0 +1,7 @@
+
+*backup*
+*.bak
+*.old
+*.zip
+*.key
+.env*
